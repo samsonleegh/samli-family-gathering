@@ -817,19 +817,24 @@
 
             if (!name || !attending) return;
 
-            // Hide form, show success
-            form.style.display = 'none';
-            formSuccess.classList.add('show');
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
 
-            if (attending === 'yes') {
-                successMsg.innerHTML = `Thanks <strong>${name}</strong>! Can't wait to see ${pax > 1 ? 'all ' + pax + ' of you' : 'you'} there! &#127881;`;
-            } else {
-                successMsg.innerHTML = `Aww, we'll miss you <strong>${name}</strong>! Next time then. &#128532;`;
+            function showSuccess() {
+                form.style.display = 'none';
+                formSuccess.classList.add('show');
+                if (attending === 'yes') {
+                    successMsg.innerHTML = `Thanks <strong>${name}</strong>! Can't wait to see ${pax > 1 ? 'all ' + pax + ' of you' : 'you'} there! &#127881;`;
+                } else {
+                    successMsg.innerHTML = `Aww, we'll miss you <strong>${name}</strong>! Next time then. &#128532;`;
+                }
             }
 
-            // TODO: Wire up to a backend (Google Forms, Formspree, etc.)
-            // Example: fetch('YOUR_ENDPOINT', { method: 'POST', body: JSON.stringify({ name, attending, pax }) })
-            console.log('RSVP:', { name, attending, pax });
+            fetch('https://script.google.com/macros/s/AKfycbwUILildZnBokrUiKJaj9uy4MWMbslQDBjBd81kJwdAD2Kuc3DAe-92hxwbGDjtlScMhQ/exec', {
+                method: 'POST',
+                body: JSON.stringify({ name, attending, pax }),
+            }).then(showSuccess).catch(showSuccess);
         });
 
         // ========== HIDE SCROLL HINT ON SCROLL ==========
